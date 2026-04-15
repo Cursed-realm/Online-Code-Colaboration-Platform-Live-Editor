@@ -197,9 +197,9 @@ exports.githubCallback = async (req, res) => {
 
     const token = generateToken(user._id);
 
-    // Redirect directly to dashboard with token in URL
+    // Redirect to login with token in URL
     // Frontend will extract token and store it in localStorage, then redirect to dashboard
-    res.redirect(`${process.env.CLIENT_URL}/dashboard?token=${token}&authenticated=true`);
+    res.redirect(`${process.env.CLIENT_URL}/login?token=${token}&authenticated=true`);
   } catch (error) {
     console.error('GitHub callback error:', error);
     res.redirect(`${process.env.CLIENT_URL}/login?error=authentication_failed`);
