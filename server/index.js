@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const http = require('http');
+const path = require('path');
 const socketIo = require('socket.io');
 const cookieParser = require('cookie-parser');
 const { connectDB } = require('./utils/db');
@@ -52,6 +53,14 @@ app.get('/api/health', (req, res) => {
 // Socket.io handlers
 socketHandlers(io);
 
+// Serve static files from the built React app
+app.use(express.static(path.join(__dirname, '../client/build')));
+
+// Serve index.html for all non-API routes (for React Router)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/build/index.html'));
+});
+
 // Error handling middleware
 app.use((error, req, res, next) => {
   console.error('Unhandled error:', error);
@@ -59,11 +68,6 @@ app.use((error, req, res, next) => {
     success: false,
     message: error.message || 'Internal server error',
   });
-});
-
-// 404 handler
-app.use((req, res) => {
-  res.status(404).json({ success: false, message: 'Route not found' });
 });
 
 // Start server
